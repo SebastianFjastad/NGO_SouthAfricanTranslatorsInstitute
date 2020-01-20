@@ -1,0 +1,48 @@
+﻿@model MemberViewModel
+@{
+    ViewBag.Title = "General";
+    var errors = TempData["Errors"] as string;
+}
+
+@if (!string.IsNullOrEmpty(errors))
+{
+    <div class="alert alert-danger">
+        @errors
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@using (Html.BeginForm("Save", "Members", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.User.Id)
+    @Html.HiddenFor(m => m.IsGeneralDetailsSave)
+
+    <div class="form-group row">
+        <div class="col-sm-5">
+            @{Html.RenderPartial("_MemberDetails", Model.User);}
+        </div>
+        <div class="col-xs-3">
+            <input type="submit" class="btn btn-success" value="Save" style="margin-bottom: 15px;" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-9">
+            @{ Html.RenderPartial("~/Views/Shared/Member/_General.cshtml");}
+        </div>
+    </div>
+                }
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#User_DateOfBirth").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-100:+0"
+            });
+        })
+    </script>
+}

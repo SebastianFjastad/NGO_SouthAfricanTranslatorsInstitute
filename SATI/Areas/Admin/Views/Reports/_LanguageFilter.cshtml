@@ -1,0 +1,76 @@
+﻿@model SATI.Areas.Admin.Models.ReportViewModel
+
+
+<div id="languageFilter" class="reportBuilderTab">
+    <div class="row">
+        <h4>Language Details Filters</h4>
+
+        <div class="col-xs-6">
+            <div id="languageFiltersContainer">
+
+            </div>
+        </div>
+
+        <div class="col-xs-4">
+            <div id="FromLanguage" data-filter-dropdown>
+                @Html.DropDownList("FromLanguage_dd",
+                    Model.Languages.Select(r =>
+                        new SelectListItem
+                        {
+                            Value = r.LanguageId.ToString(),
+                            Text = r.Name
+                        }).ToList(), "Select Language",
+                    new {@class = "form-control"})
+            </div>
+
+            <div id="ToLanguage" data-filter-dropdown>
+                @Html.DropDownList("ToLanguage_dd",
+                    Model.Languages.Select(r =>
+                        new SelectListItem
+                        {
+                            Value = r.LanguageId.ToString(),
+                            Text = r.Name
+                        }).ToList(), "Select Language",
+                    new {@class = "form-control"})
+            </div>
+
+            <div id="Skill" data-filter-dropdown>
+                @Html.DropDownList("Skill_dd",
+                    Model.Skills.Select(r =>
+                        new SelectListItem
+                        {
+                            Value = r.SkillId.ToString(),
+                            Text = r.Name
+                        }).ToList(), "Select Skill",
+                    new {@class = "form-control"})
+            </div>
+
+            <div id="Accreditation" data-filter-dropdown>
+                @Html.DropDownList("Accreditation_dd",
+                    Model.Accreditations.Select(r =>
+                       new SelectListItem
+                        {
+                            Value = r.AccreditationId.ToString(),
+                            Text = r.Name
+                        }).ToList(), "Select Accreditation",
+                    new { @class = "form-control" })
+            </div>
+
+            <div id="Specialisation" data-filter-dropdown>
+                @Html.DropDownList("Specialisation_dd",
+                    Model.Specialisations.Select(r =>
+                       new SelectListItem
+                       {
+                           Value = r.SpecialisationId.ToString(),
+                           Text = r.Name
+                       }).ToList(), "Select Specialisation",
+                    new { @class = "form-control" })
+            </div>
+            <div id="bool" class="filter">
+                <label><input type="radio" name="boolFilter" value="true" /> Include</label>
+                <label><input type="radio" name="boolFilter" value="false" /> Exclude</label>
+                <label><input type="radio" name="boolFilter" value="null" /> Ignore</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@model  MemberViewModel
+
+@{
+    ViewBag.Title = "Member";
+    var errors = TempData["Errors"] as string;
+}
+
+@if (!string.IsNullOrEmpty(errors))
+{
+    <div class="alert alert-danger">
+        @errors
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@using (Html.BeginForm("Save", "Members", FormMethod.Post, new { id = "detailsForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.User.Id)
+    @Html.HiddenFor(m => m.User.WorkAddress.AddressId)
+    @Html.HiddenFor(m => m.User.StreetAddress.AddressId)
+
+    <div class="form-group row">
+        <div class="col-sm-5">
+            @{Html.RenderPartial("_MemberDetails", Model.User);}
+        </div>
+        <div class="col-sm-7">
+            @if (!Model.User.IsDeleted)
+            {
+                <input type="submit" class="btn btn-success" value="Save" style="margin-right: 15px;" />
+            }
+            @if (!string.IsNullOrEmpty(Model.User.Id))
+            {
+                @Html.ActionLink(Model.User.IsDeleted ? "Unblock" : "Block", "Delete", new { memberId = Model.User.Id }, new { @class = "btn " + (Model.User.IsDeleted ? "btn-danger" : "btn-warning"), style = "margin-right: 20px;" })
+
+                @Html.ActionLink("New User", "Index", null, new { @class = "btn btn-default" })
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="row">
+                @{ Html.RenderPartial("~/Views/Shared/Member/_Details.cshtml", Model);}
+            </div>
+        </div>
+    </div>
+                    }
+
+@section scripts{
+    <script src="~/Scripts/app/shared/details.js"></script>
+    <script src="~/Scripts/app/shared/locationFilters.js"></script>
+}

@@ -1,0 +1,128 @@
+﻿@model SATI.Areas.Admin.Models.MemberViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<h3>@ViewBag.Title.</h3>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Create a new account.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <div data-membertype class="col-sm-offset-2">
+            <label class="control-label">
+                @if (Model.User.MemberType == 0 || Model.User.MemberType == SATI.Models.MemberType.Individual)
+                {
+                    @Html.RadioButtonFor(m => m.User.MemberType, "Individual", new { @checked = "checked" })
+                }
+                else
+                {
+                    @Html.RadioButtonFor(m => m.User.MemberType, "Individual")
+                }
+                Individual
+            </label>
+
+            <label class="control-label">
+                @Html.RadioButtonFor(m => m.User.MemberType, "Company")
+                Company
+            </label>
+            <br />
+            @Html.ValidationMessageFor(m => m.User.MemberType)
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        @Html.LabelFor(m => m.User.CountryId, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.User.CountryId,
+           Model.Countries.Select(c => new SelectListItem { Value = c.CountryId.ToString(), Text = c.Name }),
+           new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        @Html.LabelFor(m => m.User.Email, new { @class = "col-md-2 control-label", type = "email" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.User.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm" data-company-input>
+        @Html.LabelFor(m => m.User.CompanyName, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.User.CompanyName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm" data-individual-input>
+        @Html.LabelFor(m => m.User.Title, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.User.Title, Model.Titles, "Select Title", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm" data-individual-input>
+        @Html.LabelFor(m => m.User.FirstName, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.User.FirstName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm" data-individual-input>
+        @Html.LabelFor(m => m.User.LastName, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.User.LastName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-membertype] input').change(function () {
+                hidePersonalInputs($(this), false)
+            })
+
+            function hidePersonalInputs($radioBtn, isPageLoad) {
+                var $individualFields = $('[data-individual-input]');
+                var $companyFields = $('[data-company-input]');
+                if ($radioBtn.val() == 'Company') {
+                    $individualFields.hide();
+                    $companyFields.show();
+                    var notApplicable = 'N/A';
+                    $('#User_FirstName').val(notApplicable);
+                    $('#User_LastName').val(notApplicable);
+                    $('#User_Title').val(notApplicable);
+                }
+                else {
+                    $individualFields.show();
+                    $companyFields.hide();
+                    if (!isPageLoad) {
+                        $('#User_FirstName').val('');
+                        $('#User_LastName').val('');
+                        $('#User_Title').val('');
+                    }
+                }
+            }
+
+            hidePersonalInputs($('input[type=radio]:checked'), true)
+        })
+    </script>
+}

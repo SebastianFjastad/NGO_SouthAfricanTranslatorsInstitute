@@ -1,0 +1,50 @@
+﻿@functions
+{
+    public string CurMenuClass(string menus, string controller = null)
+    {
+        var men = menus.Split(',');
+        if (string.IsNullOrEmpty(controller))
+            return (men.Contains(Request.RequestContext.RouteData.Values["action"])) ? "active" : "";
+        return (men.Contains(Request.RequestContext.RouteData.Values["action"]) && Request.RequestContext.RouteData.Values["controller"].ToString() == controller) ? "active" : "";
+    }
+
+}
+
+@{
+    var memberMenuVisible = !string.IsNullOrEmpty(ViewBag.MemberId);
+}
+
+<h4>Member Search</h4>
+
+<input id="memberSearch" class="form-control" type="text" placeholder="Name, Email, Membership No" />
+
+<!-- recently viewed members -->
+<div data-bind="visible: searchHistoryVisible" class="searchHistoryContainer">
+    <button data-bind="click: clearHistory" class="btn btn-sm btn-default">Clear</button>
+    <div data-bind="foreach: recentlyViewedMembers" class="list-group" >
+        <button data-bind="click: $parent.getMember, text: FirstName + ' ' + LastName" type="button" class="list-group-item"></button>
+    </div>
+</div>
+
+<div class="list-group" style="margin-top: 25px;">
+    <ul class="nav nav-pills nav-stacked">
+        @if (memberMenuVisible)
+        {
+            <li role="presentation" class="@CurMenuClass("Index", "Members")">
+                <a href="@Url.Action("Index", "Members", new {memberId = ViewBag.MemberId})">Personal Details</a>
+            </li>
+            <li role="presentation" class="@CurMenuClass("General", "Members")">
+                <a href="@Url.Action("General", "Members", new {memberId = ViewBag.MemberId})">General Details</a>
+            </li>
+            <li role="presentation" class="@CurMenuClass("Languages", "Members")">
+                <a href="@Url.Action("Languages", "Members", new {memberId = ViewBag.MemberId})">Languages</a>
+            </li>
+            <li role="presentation" class="@CurMenuClass("Capabilities", "Members")">
+                <a href="@Url.Action("Capabilities", "Members", new {memberId = ViewBag.MemberId})">Capabilities</a>
+            </li>
+            <li role="presentation" class="@CurMenuClass("Payments", "Members")">
+                <a href="@Url.Action("Payments", "Members", new {memberId = ViewBag.MemberId})">Payments</a>
+            </li>
+        }
+    </ul>
+</div>

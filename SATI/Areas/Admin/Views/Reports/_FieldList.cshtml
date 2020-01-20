@@ -1,0 +1,80 @@
+﻿
+<div id="resultFields" data-bind="with: fieldNames" class="reportBuilderTab">
+    <h4>Result Fields Selection</h4>
+    <button class="btn btn-xs" data-select-many="all">Select All</button>&nbsp;<button class="btn btn-xs" data-select-many="none">Select None</button>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.MembershipNo))" /> Membership Number
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.Title))" /> Title
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.FirstName))" /> FirstName
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.Initials))" /> Initials
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.LastName))" /> LastName
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.MemberType))" /> Individual/Company
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.CountryReport))" /> Country
+    </label>
+    <label>
+        <input type="checkbox" name="Region" /> Region
+    </label>
+    <label>
+        <input type="checkbox" name="Area" /> Area
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.StreetAddressReport))" /> Home Address
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.WorkAddressReport))" /> Work Address
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.CellPhoneReport))" /> Cell Phone
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.AlternatePhoneReport))" /> Home Phone
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.WorkPhoneReport))" /> Work Phone
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.FaxReport))" /> Fax
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.Email))" /> Email
+    </label>
+    @*<label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.Accredited))" /> Accredited
+    </label>*@
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.HoursPerWeekAvailable))" /> Available Hours Per Week
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.AvailabilityType))" /> Availability Type
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.DateOfBirthReport))" /> D.O.B
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.DateJoinedReport))" /> Date Joined
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.MembershipYear))" /> Membership Year
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.GroupsReport))" /> Groups
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.LanguagesReport))" /> Languages
+    </label>
+    <label>
+        <input type="checkbox" name="@(nameof(SATI.Models.User.CapabilitiesReport))" /> Capabilities
+    </label>
+</div>

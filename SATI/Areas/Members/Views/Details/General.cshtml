@@ -1,0 +1,37 @@
+﻿@using SATI.Models
+@model SATI.Areas.Admin.Models.MemberViewModel
+
+@{
+    ViewBag.Title = "General";
+}
+
+@using (Html.BeginForm("Save", "Details", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.User.Id)
+    @Html.HiddenFor(m => m.IsGeneralDetailsSave)
+
+    <div style="margin-top: 30px;">
+        @{ Html.RenderPartial("_Tab", TabType.General);}
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="general" style="padding-top: 15px;">
+                @{ Html.RenderPartial("~/Views/Shared/Member/_General.cshtml", Model);}
+                <div class="col-xs-12 form-group">
+                    <input type="submit" class="btn btn-success" value="Save"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#User_DateOfBirth").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-100:+0"
+            });
+        })
+    </script>
+}

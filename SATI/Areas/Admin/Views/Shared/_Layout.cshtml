@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - SATI</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/"><img class="navbar-brand logo" src="~/content/images/logo.png" alt="SATI" /></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Members", "Index", "Members")</li>
+                <li>@Html.ActionLink("Reports", "Index", "Reports")</li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">App Data <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink("Skills", "Index", "Skills")</li>
+                        <li>@Html.ActionLink("Accreditations", "Index", "Accreditations")</li>
+                        <li>@Html.ActionLink("Specialisations", "Index", "Specialisations")</li>
+                        <li>@Html.ActionLink("Payment Categories", "Index", "PaymentCategories")</li>
+                        <li>@Html.ActionLink("Social Media", "Index", "SocialMedia")</li>
+                        <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
+                        <li>@Html.ActionLink("Locations", "Index", "Locations")</li>
+                    </ul>
+                </li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid body-content">
+
+    <div id="sideMenu">
+        @{ Html.RenderPartial("_Menu"); }
+    </div>
+
+    <div id="pageBody">
+        @RenderBody()
+
+        <hr/>
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year - SATI</p>
+        </footer>
+    </div>
+</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/libs")
+    @Scripts.Render("~/bundles/app")
+
+<script type="text/javascript">
+    var globals = {};
+    $(function() {
+        globals.notificationManager = new NotificationManager();
+        globals.dataService = new DataService();
+
+        var memberId = '@ViewBag.RemoveMemberId';
+        new Search(memberId);
+
+        $('.btn-success').click(function() {
+
+            setTimeout(function () {
+                $(this).prop('disabled', true);
+            }, 100);
+
+
+            setTimeout(function() {
+                $(this).prop('disabled', false);
+            }, 3000);
+
+        });
+    });
+</script>
+
+@RenderSection("scripts", required: false)
+</body>
+</html>

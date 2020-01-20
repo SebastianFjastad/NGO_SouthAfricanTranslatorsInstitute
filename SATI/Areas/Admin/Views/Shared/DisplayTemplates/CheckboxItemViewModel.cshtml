@@ -1,0 +1,9 @@
+﻿@model SATI.Areas.Admin.Models.CheckboxItemViewModel
+
+<li>
+    @Html.HiddenFor(m => m.Id)
+    <label for="IsSelected" class="control-label">
+        @Html.CheckBoxFor(m => m.IsSelected, new { @class = "checkbox" })
+        @Model.Name
+    </label>
+</li>

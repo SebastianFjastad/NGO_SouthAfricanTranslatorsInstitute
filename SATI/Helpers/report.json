@@ -1,0 +1,231 @@
+﻿{
+  "FieldFilters": {
+    "MembershipNo": true,
+    "Title": true,
+    "FirstName": true,
+    "Initials": true,
+    "LastName": true,
+    "MemberType": true,
+    "CountryReport": true,
+    "Region": true,
+    "Area": true,
+    "StreetAddressReport": true,
+    "WorkAddressReport": true,
+    "CellPhoneReport": true,
+    "AlternatePhoneReport": true,
+    "WorkPhoneReport": true,
+    "FaxReport": true,
+    "Email": true,
+    "Accredited": true,
+    "HoursPerWeekAvailable": true,
+    "AvailabilityType": true,
+    "DateOfBirthReport": true,
+    "DateJoinedReport": true,
+    "MembershipYear": true,
+    "GroupsReport": true,
+    "LanguagesReport": true,
+    "CapabilitiesReport": true
+  },
+  "PersonalDetailsFilters": [
+    {
+      "name": "First Name",
+      "field": "FirstName",
+      "type": "text",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Last Name",
+      "field": "LastName",
+      "type": "text",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Is Individual",
+      "field": "MemberType",
+      "type": "bool",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Country",
+      "field": "CountryId",
+      "type": "option",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Region",
+      "field": "RegionId",
+      "type": "option",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Area",
+      "field": "AreaId",
+      "type": "option",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "First Language",
+      "field": "FirstLanguageId",
+      "type": "option",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Group",
+      "field": "GroupId",
+      "type": "text",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Employer",
+      "field": "Employer",
+      "type": "text",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Freelance",
+      "field": "IsFreelance",
+      "type": "bool",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Availability",
+      "field": "Availability",
+      "type": "option",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "Accredited",
+      "field": "IsAccredited",
+      "type": "bool",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": ""
+      }
+    },
+    {
+      "name": "MembershipYear",
+      "field": "MembershipYear",
+      "type": "range",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": "",
+        "value1": "",
+        "value2": ""
+      }
+    },
+    {
+      "name": "Last Modified",
+      "field": "LastModified",
+      "type": "range",
+      "selected": false,
+      "clicked": false,
+      "param": {
+        "type": "",
+        "value": "",
+        "value1": "",
+        "value2": ""
+      }
+    }
+  ],
+  "LanguageFilters": [
+    {
+      "name": "From Language",
+      "field": "FromLanguage",
+      "type": "option",
+      "selected": true,
+      "clicked": false,
+      "param": { "type": "", "value": "1" }
+    },
+    {
+      "name": "To Language",
+      "field": "ToLanguage",
+      "type": "option",
+      "selected": true,
+      "clicked": false,
+      "param": { "type": "", "value": "2" }
+    },
+    {
+      "name": "Able To Do",
+      "field": "Skill",
+      "type": "option",
+      "selected": true,
+      "clicked": false,
+      "param": { "type": "", "value": "17" }
+    },
+    {
+      "name": "Accreditation",
+      "field": "Accreditation",
+      "type": "option",
+      "selected": true,
+      "clicked": false,
+      "param": { "type": "", "value": "3" }
+    },
+    {
+      "name": "Specialisation",
+      "field": "Specialisation",
+      "type": "option",
+      "selected": true,
+      "clicked": false,
+      "param": { "type": "", "value": "5" }
+    }
+  ]
+}

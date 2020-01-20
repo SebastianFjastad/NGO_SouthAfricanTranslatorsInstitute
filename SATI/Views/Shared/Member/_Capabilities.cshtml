@@ -1,0 +1,76 @@
+﻿@model SATI.Areas.Admin.Models.CapabilitiesViewModel
+
+<div id="capabilitiesTable" class="form-group" style="max-width: 700px;">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cap in Model.User.Capabilities)
+            {
+                <tr>
+                    <td>@cap.Skill.Name</td>
+                    <td>@cap.From.Name</td>
+                    <td>@(cap.To != null ? cap.To.Name : "")</td>
+                    <td>
+                        <a data-capability-id="@cap.CapabilityId" href="#" class="btn btn-default btn-sm">View</a>
+                        <a href="@Url.Action("DeleteCapability", "Shared", new { area = "", memberId = Model.User.Id, capabilityId = cap.CapabilityId })" class="btn btn-warning btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="form-group row">
+    <div id="addCapabilityContainer">
+        <div class="col-xs-2">
+            <label for="skillsDropdown" class="control-label">Skill</label>
+            <select id="skillsDropdown" class="form-control">
+                <option value="">Select Skill</option>
+                @foreach (var skill in Model.AllSkills)
+                {
+                    <option value="@skill.SkillId" data-is-transitive="@skill.IsTransitive">@skill.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-xs-2">
+            <label for="fromLanguage" class="control-label">From</label>
+            <select id="fromLanguage" class="form-control">
+                <option value="">Select Language</option>
+                @foreach (var lang in Model.Languages)
+                {
+                    <option value="@lang.LanguageId">@lang.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-xs-2" id="toLanguageContainer">
+            <label for="toLanguage" class="control-label">To</label>
+            <select id="toLanguage" class="form-control">
+                <option value="">Select Language</option>
+                @foreach (var lang in Model.Languages)
+                {
+                    <option value="@lang.LanguageId">@lang.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-xs-2 actionButtons">
+            <button id="saveCapability" class="btn btn-success">Save</button>
+            <button id="clearSaveCapability" class="btn btn-default">Clear</button>
+        </div>
+    </div>
+</div>
+
+<div id="saveCapabilityError" class="error">There was a problem saving the capability.</div>
+
+<div id="capabilityDetails">
+    <!-- ajax result -->
+</div>

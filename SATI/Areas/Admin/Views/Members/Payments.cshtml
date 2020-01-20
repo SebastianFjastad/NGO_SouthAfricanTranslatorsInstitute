@@ -1,0 +1,360 @@
+﻿@model SATI.Areas.Admin.Models.PaymentsViewModel
+
+@{
+    ViewBag.Title = "Payments";
+}
+
+<style>
+    .pickerContainer {
+        display: none;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+        .pickerContainer .pickerBody {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-height: 300px;
+            width: 600px;
+            padding: 30px;
+            padding-bottom: 15px;
+            background: white;
+            -webkit-box-shadow: 0 0 5px #222222;
+            box-shadow: 0 0 5px #222222;
+        }
+
+    .actionBtns {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .pickerBody {
+        max-height: 500px;
+    }
+
+    [data-payment-cat]:hover {
+        cursor: pointer;
+    }
+
+    #paymentMethodDialog .pickerBody {
+        width: 500px;
+    }
+
+    #paymentMethodDialog table {
+        margin-top: 15px;
+        overflow-y: auto;
+        display: block;
+        max-height: 300px;
+        width: 400px;
+    }
+
+    #paymentMethodDialog table tbody tr:hover {
+        background: lightblue;
+        cursor: pointer;
+    }
+
+    .selectedRow {
+        background: lightblue;
+    }
+
+    .selectedText {
+        display: none;
+    }
+
+    .selectedRow .selectedText {
+        display: block;
+    }
+
+</style>
+
+<div class="form-group">
+    <button id="addPayment" class="btn btn-success">Add Payment</button>
+</div>
+
+<div class="form-group" style="width: 70%;">
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Year</th>
+            <th>Comment</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td style="text-align: right;">Total:</td>
+                <td>@(Model.Payments.Sum(p => p.PaymentCategory.Amount))</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+        <tbody>
+        @foreach (var p in Model.Payments)
+        {
+            <tr>
+                <td>@p.PaymentDate.ToString("yyyy-MM-dd")</td>
+                <td>@p.PaymentCategory.Name</td>
+                <td>@p.PaymentCategory.Amount</td>
+                <td>@p.PaymentMethod.Name</td>
+                <td>@p.FinancialYear</td>
+                <td>@p.Comment</td>
+                <td>@Html.ActionLink("X", "DeletePayment", "Members", new { paymentId = p.PaymentId }, new {@class = "btn btn-warning"})</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div id="paymentCategoriesDialog" class="pickerContainer">
+    @Html.HiddenFor(m => m.MemberId)
+    <div class="pickerBody">
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <div data-payment-cat class="input-group" style="max-width: 280px;">
+                    <input id="paymentCategoryInput" data-payment-method-id="" type="text" class="form-control" placeholder="Choose Payment Category" value=""/>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <input id="amount" type="number" name="amount" placeholder="Amount" class="form-control" readonly="" value=""/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input id="paymentDate" type="text" class="form-control" placeholder="Payment Date" value=""/>
+            </div>
+            <div class="col-xs-6">
+                <input id="financialYear" value="@DateTime.Now.Year" type="number" step="1" max="@(DateTime.Now.Year + 1)" name="year" placeholder="Financial Year" class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <select id="paymentMethod" class="form-control">
+                    <option value="">< Payment Method ></option>
+                    @foreach (var m in Model.PaymentMethods)
+                    {
+                        <option value="@m.PaymentMethodId">@m.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xs-6">
+                <label for="credit" style="margin-right: 10px;">
+                    <input id="credit" type="radio" name="CardPaymentType" value="1"/>
+                    Credit
+                </label>
+                <label for="debit">
+                    <input id="debit" type="radio" name="CardPaymentType" value="2"/>
+                    Debit
+                </label>
+
+                <label for="debit">
+                    <input id="none" type="radio" name="CardPaymentType" value="3" />
+                    None
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group row" style="position: relative;">
+            <div class="col-xs-6">
+                <textarea id="comment" name="Comment" cols="50" rows="5" class="form-control"></textarea>
+            </div>
+            <div class="actionBtns">
+                <button id="cancel" class="btn btn-default">Cancel</button>
+                <button id="save" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="paymentMethodDialog" class="pickerContainer">
+    <div class="pickerBody">
+        <input id="paymentMethodSearch" type="text" placeholder="Search" class="form-control" />
+
+        <table id="paymentTypesTable" class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Selected</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.PaymentCategories)
+            {
+                <tr data-id="@p.PaymentCategoryId" data-name="@p.Name" data-amount="@p.Amount">
+                    <td>@p.Name</td>
+                    <td>@p.Amount</td>
+                    <td><span class="selectedText">Yes</span></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="pull-right actionBtns">
+            <button id="cancelPaymentMethod" class="btn btn-default">Cancel</button>
+            <button id="selectPaymentMethod" class="btn btn-success">Select</button>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#paymentDate').datepicker({ dateFormat: 'yy/mm/dd', changeMonth: true, changeYear: true });
+
+            var $addPaymentBtn = $('#addPayment');
+            var $paymentCatDialog = $('#paymentCategoriesDialog');
+            var $paymentMethodDialog = $('#paymentMethodDialog');
+            var $paymentCatTrigger = $('[data-payment-cat]');
+            var $paymentCategoryInput = $('#paymentCategoryInput');
+            var $amount = $('#amount');
+            var $paymentDate = $('#paymentDate');
+            var $financialYear = $('#financialYear');
+            var $paymentMethod = $('#paymentMethod');
+            var $comment = $('#comment');
+
+            var $cancelBtn = $('#cancel');
+            var $saveBtn = $('#save');
+
+            var $cancelPaymentMethod = $('#cancelPaymentMethod');
+            var $selectPaymentMethod = $('#selectPaymentMethod');
+
+            var $paymentMethodSearch = $('#paymentMethodSearch');
+
+            $addPaymentBtn.click(() => { $paymentCatDialog.show(); });
+
+            $cancelBtn.click(() => { $paymentCatDialog.hide(); });
+
+            $cancelPaymentMethod.click(() => {
+                $paymentMethodDialog.hide();
+                $paymentCatDialog.show();
+            });
+
+            $paymentCatTrigger.on('click', () => {
+                $paymentCatDialog.hide();
+                $paymentMethodDialog.show();
+            });
+
+            $paymentMethodDialog.on('click', 'tbody tr', function () {
+                var $this = $(this);
+                $this.siblings().removeClass('selectedRow');
+                $this.addClass('selectedRow');
+            });
+
+            $paymentMethodSearch.keyup(function () {
+                var term = $(this).val().toLowerCase();
+
+                var $rows = $paymentMethodDialog.find('tbody tr');
+
+                if (term) {
+                    $.each($rows, (i, r) => {
+                        var $this = $(r);
+
+                        if ($this.data('name').toLowerCase().indexOf(term) !== -1
+                            || $this.data('amount').toLowerCase(term).indexOf(term) !== -1) {
+                            $this.show();
+                        } else {
+                            $this.hide();
+                            $this.removeClass('selectedRow');
+                        }
+                    });
+                }
+                else {
+                    $rows.show();
+                }
+            });
+
+            $selectPaymentMethod.click(function () {
+                var $selectedRow = $paymentMethodDialog.find('table tr.selectedRow');
+
+                if (!$selectedRow.length) {
+                    alert('Please select a payment method');
+                    return false;
+                }
+                else {
+                    $paymentCategoryInput.data('payment-method-id', $selectedRow.data('id'));
+                    $paymentCategoryInput.val($selectedRow.data('name'));
+                    $amount.val($selectedRow.data('amount'));
+                    $paymentMethodDialog.hide();
+                    $paymentCatDialog.show();
+                }
+            });
+
+            function validate(params) {
+                var success = true;
+                var valMessage = "Enter the following to save: ";;
+
+                if (!params.paymentCategoryId) {
+                    valMessage += '\n Payment Category';
+                    success = false;
+                }
+
+                if (!params.paymentDate) {
+                    valMessage += '\n Payment Date';
+                    success = false;
+                }
+
+                if (!params.financialYear) {
+                    valMessage += '\n Finacial Year';
+                    success = false;
+                }
+
+                if (!params.paymentMethodId) {
+                    valMessage += '\n Payment Method';
+                    success = false;
+                }
+
+                if (!params.cardPaymentType) {
+                    valMessage += '\n Card Payment Type';
+                    success = false;
+                }
+
+                if (!success) {
+                    alert(valMessage);
+                    return false;
+                }
+                return true;
+            }
+
+            $saveBtn.click(() => {
+
+                var params = {
+                    memberId: $('#MemberId').val(),
+                    paymentCategoryId: $paymentCategoryInput.data('payment-method-id'),
+                    paymentDate: $paymentDate.val(),
+                    financialYear: $financialYear.val(),
+                    paymentMethodId: $paymentMethod.val(),
+                    cardPaymentType: $('input[name=CardPaymentType]:checked').val(),
+                    comment: $comment.val()
+
+                }
+
+                if (!validate(params)) return false;
+
+                $.post('@Url.Action("SavePayment", "Members")', params, function (){ window.location.reload()});
+            });
+        })
+    </script>
+}
+

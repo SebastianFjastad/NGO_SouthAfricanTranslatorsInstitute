@@ -1,0 +1,130 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+#sideMenu {
+    position: fixed;
+    width: 300px;
+    padding: 15px;
+    height: 100%;
+    border-right: lightgray solid 1px;
+}
+
+.searchHistoryContainer {
+    margin-top: 25px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#pageBody {
+    width: 100%;
+    padding-left: 315px;
+    padding-right: 30px;
+    padding-top: 15px;
+    box-sizing: border-box;
+}
+
+footer {
+    margin: 0 15px;
+    text-align: right;
+}
+
+.addressTab {
+    padding-top: 15px;
+}
+
+.phoneCodeInput {
+    width: 50px !important;
+}
+
+.phoneInput {
+    width: 100px;
+}
+
+.contactDetails label,
+.contactDetails input {
+    display: inline-block;
+}
+
+.contactDetails label {
+    width: 80px;
+}
+
+.groupList li {
+    list-style: none;
+}
+
+    .groupList li label {
+        display: inline-block;
+    }
+
+    .groupList li input {
+        display: inline-block;
+    }
+
+.error {
+    color: red;
+}
+
+#saveCapabilityError {
+    display: none;
+}
+
+#addCapability {
+    margin-top: 25px;
+}
+
+
+.memberDetailsBar {
+    display: inline-block;
+    font-size: 16px;
+}
+
+.noMemberDetailsBar {
+    background: lightblue;
+    padding: 7px 5px;
+}
+
+    .noMemberDetailsBar h4 {
+        margin: 0;
+    }
+
+.memberDetailsValue {
+    margin-right: 7px;
+}
+
+.field-validation-error {
+    color: red;
+}
+
+
+
+.reportBuilderTab {
+    display: none;
+}
+
+#resultFields label,
+#personalDetailsFilter label {
+    display: block;
+}
+
+#personalDetailsFilter span {
+    margin-left: 3px;
+}

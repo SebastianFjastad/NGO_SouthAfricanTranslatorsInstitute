@@ -1,0 +1,41 @@
+﻿body {
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    padding-top: 85px;
+}
+
+.navbar-brand.logo {
+    width: 300px;
+    height: 100%;
+}
+
+.navbar-inverse {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+}
+
+.nav li a {
+    color: #101010 !important;
+}
+
+    .nav li a:hover {
+        color: #2a2a2a !important;
+    }
+
+.dropdown-toggle {
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus {
+    background-color: #e1e1e1 !important;
+}
+
+.navbar-right {
+    margin-right: 10px !important;
+}
+
+.btn-primary {
+    background-color: #12a;
+    border-color: #12a;
+}

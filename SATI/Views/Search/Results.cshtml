@@ -1,0 +1,42 @@
+﻿@model SATI.Models.SearchViewModel
+
+@{ 
+    var naturalPersonIcon = "<span class=\"glyphicon glyphicon-user\" title=\"Person\"></span>";
+    var companyIcon = "<span class=\"glyphicon glyphicon-home\" title=\"Company\"></span>";
+}
+
+@if (Model.Users.Any())
+{
+    <table id="resultsTable" class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cell No.</th>
+                <th>Landline</th>
+                <th>Region</th>
+                <th>Area</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+
+                <tr>
+                    <td>@Html.Raw(user.MemberType == SATI.Models.MemberType.Individual ? $"{user.FirstName} {user.LastName} {naturalPersonIcon}" : $"{user.CompanyName} {companyIcon}")</td>
+                    <td width="50">@user.Email</td>
+                    <td>@user.CellPhoneReport</td>
+                    <td>@(user.AlternatePhoneReport ?? user.WorkPhoneReport)</td>
+                    <th>@(user.Region?.Name)</th>
+                    <th>@(user.Area?.Name)</th>
+                    <th><button data-member-id="@user.Id" class="btn btn-xs">Details</button></th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h3 style="margin-top: 60px; text-align: center;">No Search Results</h3>
+}

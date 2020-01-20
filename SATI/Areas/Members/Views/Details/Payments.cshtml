@@ -1,0 +1,57 @@
+﻿@model SATI.Areas.Admin.Models.PaymentsViewModel
+
+@{
+    ViewBag.Title = "Payments";
+}
+
+<div style="margin-top: 30px;">
+    @{ Html.RenderPartial("_Tab", TabType.Payments);}
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="payments" style="padding-top: 15px;">
+            <div class="form-group" style="width: 70%;">
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Year</th>
+                            <th>Comment</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td style="text-align: right;">Total:</td>
+                            <td>@(Model.Payments.Sum(p => p.PaymentCategory.Amount))</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var p in Model.Payments)
+                        {
+                            <tr>
+                                <td>@p.PaymentDate.ToString("yyyy-MM-dd")</td>
+                                <td>@p.PaymentCategory.Name</td>
+                                <td>@p.PaymentCategory.Amount</td>
+                                <td>@p.PaymentMethod.Name</td>
+                                <td>@p.FinancialYear</td>
+                                <td>@p.Comment</td>
+                                <td>@Html.ActionLink("X", "DeletePayment", "Members", new { paymentId = p.PaymentId }, new { @class = "btn btn-warning" })</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

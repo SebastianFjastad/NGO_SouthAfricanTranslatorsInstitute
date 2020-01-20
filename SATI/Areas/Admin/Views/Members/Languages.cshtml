@@ -1,0 +1,20 @@
+﻿@model SATI.Areas.Admin.Models.LanguagesViewModel
+
+@{
+    ViewBag.Title = "Languages";
+}
+
+@{Html.RenderPartial("_MemberDetails", Model.User);}
+
+@Html.HiddenFor(m => m.User.Id)
+
+<h3>Member Languages</h3>
+
+@{ Html.RenderPartial("~/Views/Shared/Member/_Languages.cshtml", Model);}
+
+@section scripts{
+    <script src="~/Scripts/app/shared/languages.js"></script>
+    <script>
+        new languages('@Url.Action("SaveLanguage", "Shared", new { area = "" })');
+    </script>
+}

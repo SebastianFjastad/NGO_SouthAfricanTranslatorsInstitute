@@ -1,0 +1,65 @@
+﻿@model List<SATI.Entities.SocialMediaLink>
+@{
+    ViewBag.Title = "Social Media Links";
+}
+
+<h2>Social Media Links</h2>
+
+<table id="socialMediaTable" class="table table-condensed table-striped" style="width: 70%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var link in Model)
+        {
+            <tr>
+                <td>@Html.TextBoxFor(m => link.Name, new { @class = "form-control" })</td>
+                <td>
+                    <input data-save data-id="@link.SocialMediaLinkId" type="button" value="Update" class="btn btn-success" />
+                    @Html.ActionLink("Delete", "Delete", new { id = link.SocialMediaLinkId }, new { @class = "btn btn-warning deleteBtn" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<div style="display: inline-block; margin-top: 30px;">
+    @using (Html.BeginForm("Save", "SocialMedia", FormMethod.Post))
+    {
+        <div class="form-group">
+            <div style="display: inline-block">
+                <label for="name" style="margin-right: 15px;">Social Media Link</label>
+                <input id="name" name="Name" type="text" class="form-control"/>
+            </div>
+            <div style="display: inline-block">
+                <input type="submit" value="Save" class="btn btn-success"/>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function() {
+            $('#socialMediaTable').on('click', '[data-save]', function () {
+                var $row = $(this).closest('tr');
+                var name = $row.find("#link_Name").val();
+                var id = $(this).data('id');
+
+                if (!name.length) {
+                    alert('Please enter a Name before saving');
+                    return false;
+                }
+
+                $.post('@Url.Action("Save", "SocialMedia")', { SocialMediaLinkId: id, Name: name }, function() { window.location.reload()});
+            });
+
+        })
+    </script>
+}
+

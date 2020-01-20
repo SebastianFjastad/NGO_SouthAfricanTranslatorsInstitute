@@ -1,0 +1,44 @@
+﻿@model SATI.Areas.Admin.Models.LanguagesViewModel
+
+<table class="table table-condensed table-striped form-group" style="width: 300px;">
+    <thead>
+        <tr>
+            <th>Language</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.User.Languages.Any())
+            {
+                foreach (var item in Model.User.Languages)
+                {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@Html.ActionLink("X", "DeleteLanguage", "Shared", new { area = "", controller = "Shared", memberId = Model.User.Id, languageId = item.LanguageId }, new { @class = "btn btn-warning" })</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">No languages added</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-xs-2">
+        @if (Model.Languages.Any())
+            {
+            @Html.DropDownList("languageDropdown",
+                Model.Languages.Select(l => new SelectListItem
+                {
+                    Text = l.Name,
+                    Value = l.LanguageId.ToString()
+                }), "Select Language", new { @class = "form-control" })
+        }
+    </div>
+
+    <button id="saveMemberLanguage" class="btn btn-success">Save</button>
+</div>

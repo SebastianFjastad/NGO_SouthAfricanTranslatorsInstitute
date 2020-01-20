@@ -1,0 +1,28 @@
+﻿@using SATI.Models
+
+@model TabType
+
+@functions {
+    public static string IsActive(bool isActive)
+    {
+        return isActive ? "class=active" : "";
+    }
+}
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" @IsActive(Model == TabType.Details)>
+        <a href="@Url.Action("Index", "Details")" aria-controls="details" role="tab">Details</a>
+    </li>
+    <li role="presentation" @IsActive(Model == TabType.General)>
+        <a href="@Url.Action("General", "Details")" aria-controls="general" role="tab">General</a>
+    </li>
+    <li role="presentation" @IsActive(Model == TabType.Capabilities)>
+        <a href="@Url.Action("Capabilities", "Details")" aria-controls="capabilities" role="tab">Capabilities</a>
+    </li>
+    <li role="presentation" @IsActive(Model == TabType.Languages)>
+        <a href="@Url.Action("Languages", "Details")" aria-controls="languages" role="tab">Languages</a>
+    </li>
+    <li role="presentation" @IsActive(Model == TabType.Payments)>
+        <a href="@Url.Action("Payments", "Details")" aria-controls="payments" role="tab">Payments</a>
+    </li>
+</ul>

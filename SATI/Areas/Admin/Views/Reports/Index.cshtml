@@ -1,0 +1,638 @@
+﻿@model ReportViewModel
+
+@{
+    ViewBag.Title = "Query Builder";
+}
+
+<style>
+    .selected {
+        background-color: lightblue;
+    }
+
+    [data-filter-dropdown] {
+        display: none;
+    }
+
+    [data-filter-clicked]{
+        display: inline-flex;
+    }
+
+    [data-filter-clicked] input,
+    [data-filter-clicked] label
+    {
+        display: inline-block;
+        margin-right:5px;
+    }
+</style>
+
+<h3>Query Module</h3>
+
+<div class="row">
+    <input id="reportId" type="text" class="hidden" />
+    <div class="col-xs-4" style="width: 400px;">
+        @{Html.RenderPartial("_PreviouslyRunReports", Model.Reports);}
+    </div>
+    <div class="col-xs-6">
+        <div class="form-group">
+            <input id="reportName" type="text" class="form-control" placeholder="Report Name" />
+        </div>
+        <div id="reportContainer">
+            @{Html.RenderPartial("_FieldList");}
+
+            @{Html.RenderPartial("_PersonalDetailsFilter");}
+
+            @{Html.RenderPartial("_LanguageFilter");}
+
+            <div class="navigationBtnContainer">
+                <input type="button" class="previous btn btn-primary" value="Previous" />
+                <input type="button" class="next btn btn-primary pull-right" value="Next" />
+                <button id="getReport" class="btn btn-success pull-right hidden">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            //#region Tabs
+            var selectedTabIndex = 0;
+            var selectedTab = '';
+            var tabs = [
+                'resultFields',
+                'personalDetailsFilter',
+                'languageFilter'
+            ];
+
+            $('.next').click(function () { showNextTab(1) });
+
+            $('.previous').click(function () { showNextTab(-1) });
+
+            function showNextTab(index) {
+                selectedTabIndex += index;
+                $('.reportBuilderTab').hide();
+                selectedTab = $('#' + tabs[selectedTabIndex]);
+                selectedTab.show();
+                showOrHidePrevNextBtns();
+            }
+
+            function showOrHidePrevNextBtns() {
+                $('#getReport').addClass('hidden')
+                $('.next, .previous').show();
+                if (selectedTabIndex == 0)
+                    $('.previous').hide();
+                else if (selectedTabIndex == 2) {
+                    $('.next').hide();
+                    $('#getReport').removeClass('hidden')
+                }
+            }
+
+            showNextTab(0);
+            //#endregion
+
+            //#region Result Filters
+
+            var resultFieldFilters = {
+                '@(nameof(SATI.Models.User.MembershipNo))': false,
+                '@(nameof(SATI.Models.User.Title))': false,
+                '@(nameof(SATI.Models.User.FirstName))': false,
+                '@(nameof(SATI.Models.User.Initials))': false,
+                '@(nameof(SATI.Models.User.LastName))': false,
+                '@(nameof(SATI.Models.User.MemberType))': false,
+                '@(nameof(SATI.Models.User.AlternatePhoneReport))': false,
+                '@(nameof(SATI.Models.User.WorkPhoneReport))': false,
+                '@(nameof(SATI.Models.User.FaxReport))': false,
+                '@(nameof(SATI.Models.User.HoursPerWeekAvailable))': false,
+                '@(nameof(SATI.Models.User.CountryReport))': false,
+                @*'@(nameof(SATI.Models.User.Accredited))': false,*@
+                '@(nameof(SATI.Models.User.AvailabilityType))': false,
+                '@(nameof(SATI.Models.User.DateOfBirthReport))': false,
+                '@(nameof(SATI.Models.User.DateJoinedReport))': false,
+                '@(nameof(SATI.Models.User.MembershipYear))': false,
+                '@(nameof(SATI.Models.User.GroupsReport))': false,
+                '@(nameof(SATI.Models.User.LanguagesReport))': false,
+                '@(nameof(SATI.Models.User.CapabilitiesReport))': false,
+                'Country': false,
+                'Region': false,
+                'Area': false,
+                '@(nameof(SATI.Models.User.WorkAddressReport))': false,
+                '@(nameof(SATI.Models.User.StreetAddressReport))': false
+            }
+
+            $('#resultFields').change(function (e) {
+                var $checkbox = $(e.target);
+                var name = $checkbox.attr('name')
+                resultFieldFilters[name] = $checkbox.is(':checked');
+            })
+
+            $("#resultFields").on("click","[data-select-many]", function() {
+                var mode = $(this).data("select-many");
+                if (mode === "all")
+                    $("#resultFields input[type=checkbox]:not(:checked)").click();
+                else 
+                    $("#resultFields input[type=checkbox]:checked").click();
+            })
+
+            //#endregion
+
+            //#region shared functions
+            function renderFilterSelectors(options) {
+                var filtersHtml = '';
+
+                _.each(options, function (item, i) {
+                    var checked = item.selected ? 'checked' : '';
+
+                    filtersHtml += '<div data-filter-clicked>\
+                                        <input ' + checked + ' type="checkbox" style="cursor: pointer;" />\
+                                        <label>' + item.name + '</label>\
+                                    </div></br>';
+                });
+
+                return filtersHtml;
+            }
+
+            function setActiveFilter(isSelected, filterIndex, filters, _context) {
+                _context.activeFilter = filters[filterIndex];
+                _context.activeFilter.selected = isSelected;
+                var param = _context.activeFilter.param;
+
+                $('.filter').hide();
+                $('body').find('div[data-filter-dropdown]').hide();
+
+                if (_context.activeFilter.type == 'text') {
+                    var $textFilter = $('#text');
+
+                    //clear out filter values
+                    $textFilter.find('input[type=radio]').prop('checked', false);
+                    $textFilter.find('#textValue').val();
+
+                    //set text param type (radio buttons)
+                    $textFilter.find('input[type=radio][value="' + param.type + '"]').prop('checked', true);
+
+                    //set values
+                    $textFilter.find('#textValue').val(param.value);
+
+                    $textFilter.show();
+
+                }
+                else if (_context.activeFilter.type == 'bool') {
+                    var $boolFilter = selectedTab.find('#bool');
+
+                    //clear out filter values
+                    $boolFilter.find('input[type=radio]').prop('checked', false);
+
+                    //set values
+                    $boolFilter.find('input[type=radio][value="' + param.value + '"]').prop('checked', true);
+
+                    $boolFilter.show();
+                }
+                else if (_context.activeFilter.type == 'range') {
+                    var $rangeFilter = $('#range');
+
+                    //clear out date pickers
+                    $rangeFilter.find('input').val('');
+
+                    //set values
+                    $rangeFilter.find('#fromDate').val(param.value1);
+
+                    $rangeFilter.find('#toDate').val(param.value2);
+
+                    $rangeFilter.show();
+                }
+                else if (_context.activeFilter.type == 'option') {
+                    var $selectContainer = $('#' + _context.activeFilter.field);
+                    $selectContainer.show();
+                    $('select', $selectContainer).val(param.value);
+                }
+            }
+            //#endregion
+
+            //#region Personal Details filters
+            function personalDetailsFilter() {
+                var context = this;
+                context.activeFilter = {};
+
+                context.personalDetailsFilters = [
+                {
+                    name: "First Name",
+                    field: "FirstName",
+                    type: "text",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Last Name",
+                    field: "LastName",
+                    type: "text",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Is Individual",
+                    field: "MemberType",
+                    type: "bool",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Country",
+                    field: "CountryId",
+                    type: "option",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Region",
+                    field: "RegionId",
+                    type: "option",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Area",
+                    field: "AreaId",
+                    type: "option",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "First Language",
+                    field: "FirstLanguageId",
+                    type: "option",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Group",
+                    field: "GroupId",
+                    type: "text",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Employer",
+                    field: "Employer",
+                    type: "text",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Freelance",
+                    field: "IsFreelance",
+                    type: "bool",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Availability",
+                    field: "Availability",
+                    type: "option",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "Accredited",
+                    field: "IsAccredited",
+                    type: "bool",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: ''
+                    }
+                },
+                {
+                    name: "MembershipYear",
+                    field: "MembershipYear",
+                    type: "range",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: '',
+                        value1: '',
+                        value2: ''
+                    }
+                },
+                {
+                    name: "Last Modified",
+                    field: "LastModified",
+                    type: "range",
+                    selected: false,
+                    clicked: false,
+                    param: {
+                        type: '',
+                        value: '',
+                        value1: '',
+                        value2: ''
+                    }
+                }
+                ];
+
+                $('#fromDate').datepicker({ dateFormat: 'yy/mm/dd', changeYear: true });
+                $('#toDate').datepicker({ dateFormat: 'yy/mm/dd', changeYear: true });
+
+                var personalDetailsFilterContainer = $('#personalDetailsFiltersContainer');
+
+                personalDetailsFilterContainer.html(renderFilterSelectors(context.personalDetailsFilters));
+
+                personalDetailsFilterContainer.on('change', 'input[type=checkbox]', function () {
+                    setAndShowActiveFilter($(this));
+                });
+
+                personalDetailsFilterContainer.on('click', 'label', function () {
+                    setAndShowActiveFilter($(this).siblings('input'));
+                })
+
+                function highlightClickedFilter($clickedItem) {
+                    $('div[data-filter-clicked]').removeClass('selected');
+                    $clickedItem.closest('[data-filter-clicked]').addClass('selected')
+                }
+
+                function setAndShowActiveFilter($clickedItem) {
+                    highlightClickedFilter($clickedItem);
+                    var isSelected = $clickedItem.is(':checked');
+                    var $selectedContainer = $clickedItem.closest('[data-filter-clicked]');
+                    setActiveFilter(
+                        isSelected,
+                        personalDetailsFilterContainer.find('[data-filter-clicked]').index($selectedContainer),
+                        context.personalDetailsFilters,
+                        context);
+                }
+
+                $('#text').change(function () {
+                    var $text = $('#text');
+                    context.activeFilter.param.type = $text.find('input[type=radio]:checked').val();
+                    context.activeFilter.param.value = $text.find('#textValue').val();
+                });
+
+                $('#personalDetailsFilter #bool').change(function () {
+                    context.activeFilter.param.value = $('#personalDetailsFilter #bool').find('input[type=radio]:checked').val();
+                });
+
+                $('#fromDate, #toDate').change(function () {
+                    var fromDate = $('#range').find('#fromDate').val();
+                    var toDate = $('#range').find('#toDate').val();
+                    context.activeFilter.param.value1 = fromDate;
+                    context.activeFilter.param.value2 = toDate;
+                });
+
+                $('#personalDetailsFilter').on('change', 'select', function () {
+                    context.activeFilter.param.value = $(this).val();
+                })
+            }
+
+            var personalDetails = new personalDetailsFilter();
+            //#endregion
+
+            //#region Language Capabilities Filters
+            function languageFilters() {
+                var context = this;
+                context.activeFilter = {};
+
+                context.languageFieldFilters = [
+               {
+                   name: "From Language",
+                   field: "FromLanguage",
+                   type: "option",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               },
+               {
+                   name: "To Language",
+                   field: "ToLanguage",
+                   type: "option",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               },
+               {
+                   name: "Able To Do",
+                   field: "Skill",
+                   type: "option",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               },
+               {
+                   name: "Accreditation",
+                   field: "Accreditation",
+                   type: "option",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               },
+               {
+                   name: "Specialisation",
+                   field: "Specialisation",
+                   type: "option",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               },
+               {
+                   name: "Is Accredited",
+                   field: "IsAccredited",
+                   type: "bool",
+                   selected: false,
+                   clicked: false,
+                   param: {
+                       type: '',
+                       value: ''
+                   }
+               }
+                ];
+
+                var languageFiltersContainer = $('#languageFiltersContainer');
+
+                languageFiltersContainer.html(renderFilterSelectors(context.languageFieldFilters));
+
+                languageFiltersContainer.on('change', 'input[type=checkbox]', function () {
+                    setAndShowActiveFilter($(this));
+                });
+
+                languageFiltersContainer.on('click', 'label', function () {
+                    setAndShowActiveFilter($(this).siblings('input'));
+                })
+
+                function highlightClickedFilter($clickedItem) {
+                    $('div[data-filter-clicked]').removeClass('selected');
+                    $clickedItem.closest('[data-filter-clicked]').addClass('selected')
+                }
+
+                function setAndShowActiveFilter($clickedItem) {
+                    highlightClickedFilter($clickedItem);
+                    var isSelected = $clickedItem.is(':checked');
+                    var $selectedContainer = $clickedItem.closest('[data-filter-clicked]');
+                    setActiveFilter(
+                        isSelected,
+                        languageFiltersContainer.find('[data-filter-clicked]').index($selectedContainer),
+                        context.languageFieldFilters,
+                        context);
+                }
+
+                $('#languageFilter').on('change', 'select', function () {
+                    context.activeFilter.param.value = $(this).val();
+                })
+
+                $('#languageFilter #bool').change(function () {
+                    context.activeFilter.param.value = $('#languageFilter #bool').find('input[type=radio]:checked').val();
+                });
+            }
+
+            var langFilters = new languageFilters();
+            //#endregion
+
+
+            //#region Load/Run/Save Reports
+
+            function applyResultFieldsSelectionStates(filterList) {
+                var $container = $('#resultFields');
+                for (var key in filterList) {
+                    $container.find('input[name=' + key + ']').prop('checked', filterList[key])
+                }
+            }
+
+            //load the existing report
+            $('#previousReports').on('click', '[data-load]', function () {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("LoadReport", "Reports", new { area = "Admin" })',
+                    data: { reportId: $(this).data('report-id') },
+                    success: function (data) {
+                        //set the report name and id
+                        $('#reportName').val(data.ReportName);
+                        $('#reportId').val(data.ReportId);
+
+                        var filters = $.parseJSON(data.ReportJson);
+                        resultFieldFilters = filters.FieldFilters;
+                        personalDetails.personalDetailsFilters = filters.PersonalDetailsFilters;
+                        langFilters.languageFieldFilters = filters.LanguageFilters;
+
+                        //apply loaded filter states
+                        applyResultFieldsSelectionStates(resultFieldFilters)
+
+                        $('#personalDetailsFiltersContainer').html(renderFilterSelectors(personalDetails.personalDetailsFilters))
+                        $('#languageFiltersContainer').html(renderFilterSelectors(langFilters.languageFieldFilters))
+                        $('body').find('div[data-filter-dropdown]').hide();
+                    },
+                    dataType: 'json'
+                })
+            })
+
+            //run the existing report
+            $('#previousReports').on('click', '[data-run]', function () {
+                window.location.href = '@Url.Action("RunReport", "Reports", new { area = "Admin" })/' +
+                    $(this).data('report-id');
+            })
+
+            //delete report
+            $('#previousReports').on('click', '[data-delete]', function () {
+                if (!confirm('Are you sure you want to delete this report?'))
+                    return;
+
+                var $this = $(this);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteReport", "Reports", new { area = "Admin" })',
+                    data: { reportId: $(this).data('report-id') },
+                    success: function (data) {
+                        if (data.deleted)
+                            $this.closest('tr').remove();
+                    }
+                })
+            })
+
+            //run the currently filled out report params
+            $('#getReport').click(function () {
+
+                if ($('#reportName').val().length == 0)
+                    return alert('Please enter a report name');
+
+                var data = {
+                    reportName: $('#reportName').val(),
+                    reportId: $('#reportId').val(),
+                    reportJson: JSON.stringify(
+                        {
+                            FieldFilters: resultFieldFilters,
+                            PersonalDetailsFilters: personalDetails.personalDetailsFilters,
+                            LanguageFilters: langFilters.languageFieldFilters
+                        })
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SaveReport", "Reports", new { area = "Admin" })',
+                    data: data,
+                    success: function (data) {
+                        if (data.url)
+                            window.location.href = data.url;
+                    }
+                })
+            })
+            // #endregion
+
+        })
+    </script>
+    <script src="~/Scripts/app/shared/locationFilters.js"></script>
+}

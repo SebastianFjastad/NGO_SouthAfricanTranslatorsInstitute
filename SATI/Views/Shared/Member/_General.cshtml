@@ -1,0 +1,92 @@
+﻿@model SATI.Areas.Admin.Models.MemberViewModel
+
+<div class="col-xs-6">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Personal Information</div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.DateOfBirth, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.DateOfBirth, new { @class = "form-control" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.DateJoined, new { @class = "control-label" })
+                @Html.DisplayFor(m => m.User.DateJoined, new { @class = "form-control" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.LastUpdated, new { @class = "control-label" })
+                @Html.DisplayFor(m => m.User.LastUpdated, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.FirstLanguageId)
+                @Html.DropDownListFor(m => m.User.FirstLanguageId, Model.Languages, "Select First Language", new { @class = "form-control" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.Website)
+                @Html.TextBoxFor(m => m.User.Website, new { @class = "form-control" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.AvailabilityType)
+                @Html.EnumDropDownListFor(m => m.User.AvailabilityType, "Select Availability", new { @class = "form-control" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.MembershipYear)
+                @Html.TextBoxFor(m => m.User.MembershipYear, new { @class = "form-control", type = "number", min = Model.MinMembershipYear, max = Model.MaxMembershipYear })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.HoursPerWeekAvailable)
+                @Html.TextBoxFor(m => m.User.HoursPerWeekAvailable, new { @class = "form-control", type = "number", min = 0 })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.CheckBoxFor(m => m.User.WorksAtAgency, new { @class = "checkbox-inline" })
+                @Html.LabelFor(m => m.User.WorksAtAgency, new { @class = "control-label" })
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Groups</div>
+        <div class="panel-body groupList">
+            <ul>
+                @for (int i = 0; i < Model.UsersGroups.Count; i++)
+                {
+                    @Html.DisplayFor(m => Model.UsersGroups[i], "CheckboxItemViewModel")
+                }
+
+                @for (int i = 0; i < Model.OtherGroups.Count; i++)
+                {
+                    @Html.DisplayFor(m => Model.OtherGroups[i], "CheckboxItemViewModel")
+                }
+            </ul>
+        </div>
+    </div>
+
+</div>
+<div class="col-xs-6">
+    @Html.LabelFor(m => m.User.Qualifications, new { @class = "control-label" })
+    @Html.TextAreaFor(m => m.User.Qualifications, new { @class = "form-control", rows = 10, cols = 200 })
+
+    @Html.LabelFor(m => m.User.GeneralNotes, new { @class = "control-label" })
+    @Html.TextAreaFor(m => m.User.GeneralNotes, new { @class = "form-control", rows = 10, cols = 200 })
+
+    <div class="panel panel-default" style="margin-top: 30px;">
+        <div class="panel-heading">Social Media Links</div>
+        <div class="panel-body">
+            @for (int i = 0; i < Model.SocialMediaLinkItems.Count; i++)
+            {
+                <div class="form-group form-group-sm">
+                    <label>@Model.SocialMediaLinkItems[i].Name</label>
+                    @Html.HiddenFor(m => Model.SocialMediaLinkItems[i].SocialMediaLinkId)
+                    @Html.TextBoxFor(m => Model.SocialMediaLinkItems[i].Link, new { @class = "form-control" })
+                </div>
+            }
+        </div>
+    </div>
+
+</div>

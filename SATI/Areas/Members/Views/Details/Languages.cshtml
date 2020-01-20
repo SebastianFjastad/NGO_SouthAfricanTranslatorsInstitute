@@ -1,0 +1,22 @@
+﻿@model SATI.Areas.Admin.Models.LanguagesViewModel
+
+@{
+    ViewBag.Title = "Languages";
+}
+
+<div style="margin-top: 30px;">
+    @{ Html.RenderPartial("_Tab", TabType.Languages);}
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="languages" style="padding-top: 15px;">
+            @{ Html.RenderPartial("~/Views/Shared/Member/_Languages.cshtml", Model);}
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/app/shared/languages.js"></script>
+    <script>
+        new languages('@Url.Action("SaveLanguage", "Shared", new { area = "" })');
+    </script>
+}

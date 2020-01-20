@@ -1,0 +1,84 @@
+﻿@model List<SATI.Entities.PaymentCategory>
+
+@{
+    ViewBag.Title = "Payment Categories";
+}
+
+<h2>Payment Categories</h2>
+
+
+<table id="paymentCategoriesTable" class="table table-condensed table-striped" style="width: 70%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.TextBoxFor(m => item.Name, new {@class = "form-control"})</td>
+                <td>@Html.TextBoxFor(m => item.Amount, new {@class = "form-control"})</td>
+                <td>
+                    <input data-save data-id="@item.PaymentCategoryId" type="button" value="Update" class="btn btn-success" />
+                    @Html.ActionLink("Delete", "Delete", new { id = item.PaymentCategoryId }, new { @class = "btn btn-warning deleteBtn" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<div style="display: inline-block; margin-top: 30px;">
+    <h4>Add Payment Category</h4>
+
+    @using (Html.BeginForm("Save", "PaymentCategories", FormMethod.Post))
+    {
+        <div class="form-group">
+            <div style="display: inline-block">
+                <label for="desc" class="control-label" style="margin-right: 15px;">Description</label>
+                <input id="desc" name="Name" type="text" class="form-control"/>
+            </div>
+
+            <div style="display: inline-block">
+                <label for="amount" class="control-label" style="margin-right: 15px;">Amount</label>
+                <input id="amount" name="Amount" type="number" placeholder="0" class="form-control"/>
+            </div>
+
+            <div style="display: inline-block">
+                <input type="submit" value="Save" class="btn btn-success"/>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#paymentCategoriesTable').on('click', '[data-save]', function () {
+                var $row = $(this).closest('tr');
+                var name = $row.find("#item_Name").val();
+                var amount = $row.find("#item_Amount").val();
+                var id = $(this).data('id');
+
+                if (!name.length) {
+                    alert('Please enter a Name before saving');
+                    return false;
+                }
+
+                if (Number(amount) <= 0) {
+                    alert('Amount must be greater than 0');
+                    return false;
+                }
+
+                $.post('@Url.Action("Save", "PaymentCategories")',
+                    { PaymentCategoryId: id, Name: name, Amount: amount },
+                    function () { window.location.reload() });
+            });
+
+        })
+    </script>
+}

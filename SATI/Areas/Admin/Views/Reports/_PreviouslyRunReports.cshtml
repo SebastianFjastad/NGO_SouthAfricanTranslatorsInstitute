@@ -1,0 +1,19 @@
+﻿@model List<SATI.Entities.Report>
+
+<table id="previousReports" class="table table-condensed">
+    <tr>
+        <th>Name</th>
+        <th></th>
+    </tr>
+    <tbody>
+        @foreach(var report in Model)
+        {
+            <tr>
+                <td>@($"{report.ReportName} ({report.LastRunDateString})")</td>
+                <td style="white-space:nowrap">
+                    <button class="btn btn-xs btn-default" data-load data-report-id="@report.ReportId" >Load</button>&nbsp;<button class="btn btn-xs btn-default" data-run data-report-id="@report.ReportId" >Run</button>&nbsp;<button class="btn btn-xs btn-default" data-delete data-report-id="@report.ReportId" >Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

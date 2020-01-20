@@ -1,0 +1,140 @@
+﻿@model SATI.Areas.Admin.Models.CapabilityDetailsViewModel
+
+@Html.HiddenFor(m => m.Capability.CapabilityId)
+
+<hr />
+
+<h3>Details</h3>
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="form-group">
+        @Html.CheckBoxFor(m => m.Capability.IsAccredited)
+        @Html.LabelFor(m => m.Capability.IsAccredited, new { @class = "control-label" })
+        <input type="button" value="Save Is Accredited" class="saveIsAccreditedBtn btn btn-success btn-sm" style="display: inline-block; margin-left: 10px;" />
+    </div>
+}
+else
+{
+    <div>
+        @Html.CheckBoxFor(m => m.Capability.IsAccredited, new { disabled = "disabled" })
+        @Html.LabelFor(m => m.Capability.IsAccredited)
+    </div>
+}
+
+<div class="row form-group">
+    <div class="col-sm-3">
+        <ul class="list-group">
+            <li class="list-group-item attributeHeader">Skill</li>
+            <li class="list-group-item">@Model.Capability.Skill.Name</li>
+        </ul>
+    </div>
+    <div class="col-sm-3">
+        <ul class="list-group">
+            <li class="list-group-item attributeHeader editAccreditations">
+                Accreditations <span class="pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</span>
+            </li>
+            @foreach (var item in Model.Capability.Accreditations)
+            {
+                <li class="list-group-item">@item.Name</li>
+            }
+        </ul>
+    </div>
+    <div class="col-sm-3">
+        <ul class="list-group">
+            <li class="list-group-item attributeHeader editSpecialisations">
+                Specialisations <span class="pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</span>
+            </li>
+            @foreach (var item in Model.Capability.Specialisations)
+            {
+                <li href="#" class="list-group-item">@item.Name</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<!-- Specialisations -->
+<div data-specialisations-picker class="pickerContainer">
+    <div class="pickerBody row">
+        <div data-unselected class="col-xs-5">
+            <h4>Unselected Specialisations</h4>
+            <table>
+                <tbody>
+                    @foreach (var spec in Model.UnselectedSpecialisations)
+                    {
+                        <tr data-selected-id="@spec.SpecialisationId">
+                            <td>@spec.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-2 btnContainer">
+            <button class="btn btn-default addBtn">Add <span class="glyphicon glyphicon-arrow-right"></span></button>
+            <button class="btn btn-default removeBtn"><span class="glyphicon glyphicon-arrow-left"></span> Remove</button>
+        </div>
+
+        <div data-selected class="col-xs-5">
+            <h4>Member's Specialisations</h4>
+            <table>
+                <tbody>
+                    @foreach (var spec in Model.SelectedSpecialisations)
+                    {
+                        <tr data-selected-id="@spec.SpecialisationId">
+                            <td>@spec.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-12">
+            <button class="btn btn-success pull-right saveAttributesBtn">Save</button>
+            <button class="btn btn-default pull-right closeBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Accreditations -->
+<div data-accreditations-picker class="pickerContainer">
+    <div class="pickerBody row">
+        <div data-unselected class="col-xs-5">
+            <h4>Unselected Accreditations</h4>
+            <table>
+                <tbody>
+                    @foreach (var accr in Model.UnselectedAccreditations)
+                    {
+                        <tr data-selected-id="@accr.AccreditationId">
+                            <td>@accr.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-2 btnContainer">
+            <button class="btn btn-default addBtn">Add <span class="glyphicon glyphicon-arrow-right"></span></button>
+            <button class="btn btn-default removeBtn"><span class="glyphicon glyphicon-arrow-left"></span> Remove</button>
+        </div>
+
+        <div data-selected class="col-xs-5">
+            <h4>Member's Accreditations</h4>
+            <table>
+                <tbody>
+                    @foreach (var accr in Model.SelectedAccreditations)
+                    {
+                        <tr data-selected-id="@accr.AccreditationId">
+                            <td>@accr.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-12">
+            <button class="btn btn-success pull-right saveAttributesBtn">Save</button>
+            <button class="btn btn-default pull-right closeBtn">Cancel</button>
+        </div>
+    </div>
+</div>

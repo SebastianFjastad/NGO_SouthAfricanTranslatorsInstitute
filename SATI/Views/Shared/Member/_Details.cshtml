@@ -1,0 +1,202 @@
+﻿@model SATI.Areas.Admin.Models.MemberViewModel
+
+<div class="col-sm-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">Type</div>
+        <div class="panel-body" data-membertype>
+            <label class="control-label">
+                @Html.RadioButtonFor(m => m.User.MemberType, "Individual")
+                Individual
+            </label>
+
+            <label class="control-label">
+                @Html.RadioButtonFor(m => m.User.MemberType, "Company")
+                Company
+            </label>
+            <br />
+            @Html.ValidationMessageFor(m => m.User.MemberType)
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Personal</div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                <label for="User_Title" class="col-md-2 control-label">Title</label>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.User.Title, Model.Titles, "Select Title", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.User.Title)
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.FirstName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.User.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.User.FirstName)
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.Initials, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.User.Initials, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.LastName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.User.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.User.LastName)
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.PreferredName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.User.PreferredName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group form-group-sm" data-company style="display: @(Model.User?.CompanyName != null ? "" : "none");">
+                @Html.LabelFor(m => m.User.CompanyName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.User.CompanyName, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Location</div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                <label for="User_CountryId" class="col-md-2 control-label">Country</label>
+                <div class="col-md-10">
+                    <select id="User_CountryId" name="User.CountryId" class="form-control" data-val="true" data-val-required="Country is required.">
+                        <option value="">Select Country</option>
+                        @foreach (var c in Model.Countries)
+                        {
+                            var isSelected = Model.User.CountryId == c.CountryId ? "selected" : "";
+                            <option @isSelected value="@c.CountryId">@c.Name</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.User.CountryId)
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label for="User_RegionId" class="col-md-2 control-label">Region</label>
+                <div class="col-md-10">
+                    <select id="User_RegionId" name="User.RegionId" class="form-control">
+                        <option value="">Select Region</option>
+                        @foreach (var r in Model.Regions)
+                        {
+                            var isSelected = Model.User.RegionId == r.RegionId ? "selected" : "";
+                            <option data-country="@r.CountryId" @isSelected value="@r.RegionId">@r.Name</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.User.RegionId)
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label for="User_AreaId" class="col-md-2 control-label">Areas</label>
+                <div class="col-md-10">
+                    <select id="User_AreaId" name="User.AreaId" class="form-control">
+                        <option value="">Select Area</option>
+                        @foreach (var a in Model.Areas)
+                        {
+                            var isSelected = Model.User.AreaId == a.AreaId ? "selected" : "";
+                            <option data-region="@a.RegionId" @isSelected value="@a.AreaId">@a.Name</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.User.AreaId)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">Address</div>
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#postal">Postal</a></li>
+                <li><a data-toggle="tab" href="#street">Street</a></li>
+            </ul>
+
+            <div class="tab-content addressTab">
+                <div id="postal" class="tab-pane fade in active">
+                    <div class="col-md-12">
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.WorkAddress.Line1, new { @class = "form-control", placeholder = "Line 1" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.WorkAddress.Line2, new { @class = "form-control", placeholder = "Line 2" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.WorkAddress.Line3, new { @class = "form-control", placeholder = "Line 3" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.WorkAddress.Town, new { @class = "form-control", placeholder = "Town" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.WorkAddress.PostalCode, new { @class = "form-control", placeholder = "Postal Code" })
+                        </div>
+                    </div>
+                </div>
+
+                <div id="street" class="tab-pane fade in">
+                    <div class="col-md-12">
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.StreetAddress.Line1, new { @class = "form-control", placeholder = "Line 1" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.StreetAddress.Line2, new { @class = "form-control", placeholder = "Line 2" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.StreetAddress.Line3, new { @class = "form-control", placeholder = "Line 3" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.StreetAddress.Town, new { @class = "form-control", placeholder = "Town" })
+                        </div>
+                        <div class="form-group form-group-sm">
+                            @Html.TextBoxFor(m => m.User.StreetAddress.PostalCode, new { @class = "form-control", placeholder = "Postal Code" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Contact</div>
+        <div class="panel-body contactDetails">
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.WorkPhone, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.WorkPhoneCode, new { @class = "form-control phoneCodeInput" })
+                @Html.TextBoxFor(m => m.User.WorkPhone, new { @class = "form-control phoneInput" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.AlternatePhone, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.AlternatePhoneCode, new { @class = "form-control phoneCodeInput" })
+                @Html.TextBoxFor(m => m.User.AlternatePhone, new { @class = "form-control phoneInput" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.CellPhone, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.CellPhoneCode, new { @class = "form-control phoneCodeInput" })
+                @Html.TextBoxFor(m => m.User.CellPhone, new { @class = "form-control phoneInput" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.Fax, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.FaxCode, new { @class = "form-control phoneCodeInput" })
+                @Html.TextBoxFor(m => m.User.Fax, new { @class = "form-control phoneInput" })
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.Email, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.Email, new { @class = "form-control", data_val = "true", data_val_required = "The Email field is required." }) <br />
+                @Html.ValidationMessageFor(m => m.User.Email)
+            </div>
+            <div class="form-group form-group-sm">
+                @Html.LabelFor(m => m.User.AlternateEmail, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.User.AlternateEmail, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>

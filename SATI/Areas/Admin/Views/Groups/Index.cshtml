@@ -1,0 +1,71 @@
+﻿@model List<SATI.Entities.Group>
+@{
+    ViewBag.Title = "Groups";
+}
+
+<h2>Groups</h2>
+
+<table id="groupTable" class="table table-condensed table-striped" style="width: 70%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Member Count</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td>@Html.TextBoxFor(m => group.Name, new { @class = "form-control" })</td>
+                <td>@(group.Users.Any() ? group.Users.Count : 0)</td>
+                <td>@group.CreatedDate.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <input data-save data-group-id="@group.GroupId" type="button" value="Update" class="btn btn-success" />
+                    @Html.ActionLink("Delete", "Delete", new { groupId = group.GroupId }, new { @class = "btn btn-warning deleteBtn" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<div style="display: inline-block; margin-top: 30px;">
+    @using (Html.BeginForm("Save", "Groups", FormMethod.Post))
+    {
+        <div class="form-group">
+            <div style="display: inline-block">
+                <label for="groupName" style="margin-right: 15px;">Group Name</label>
+                <input id="groupName" name="Name" type="text" class="form-control"/>
+            </div>
+            <div style="display: inline-block">
+                <input type="submit" value="Save" class="btn btn-success"/>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function() {
+            $('#groupTable').on('click', '[data-save]', function() {
+                var $row = $(this).closest('tr');
+                var name = $row.find("#group_Name").val();
+                var groupId = $(this).data('group-id');
+
+                if (!name.length) {
+                    alert('Please enter a Name before saving');
+                    return false;
+                }
+
+                $.post('@Url.Action("Save", "Groups")', { GroupId: groupId, Name: name }, function() { window.location.reload()});
+            });
+
+        })
+    </script>
+}
+
+
+

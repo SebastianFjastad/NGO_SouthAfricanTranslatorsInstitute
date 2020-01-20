@@ -1,0 +1,120 @@
+﻿@model SATI.Models.User
+@{
+    ViewBag.Title = "Member Details";
+}
+
+@functions{
+    public string IsVisible(string value)
+    {
+        return !string.IsNullOrEmpty(value) ? "" : "style=display:none";
+    }
+}
+
+<div style="margin-bottom: 10px;">
+    <button id="backBtn" class="btn btn-primary" style="display: inline-block; margin-right: 15px;">
+        <span class="glyphicon glyphicon-chevron-left"></span> Back
+    </button>
+    <h3 style="display: inline-block">Member Details</h3>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @if (Model.MemberType == SATI.Models.MemberType.Company)
+        {
+            @Html.DisplayFor(m => m.CompanyName)
+        }
+        else
+        {
+            @Html.DisplayFor(m => m.Title)<span>&nbsp;</span>@Html.DisplayFor(m => m.FirstName)<span>&nbsp;</span> @Html.DisplayFor(m => m.LastName) @(!string.IsNullOrEmpty(Model.PreferredName) ? $"({Model.PreferredName})" : "")
+        }
+    </div>
+    <div class="panel-body">
+        @if (Model.MemberType == SATI.Models.MemberType.Individual)
+        {
+            <h4>Personal Details</h4>
+        }
+        else
+        {
+            <h4>Company Contact Person</h4>
+        }
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.Title)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.FirstName, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.FirstName)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.LastName, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.LastName)
+        </div>
+
+        <hr />
+        <h4>Contact Details</h4>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.Email)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.CellPhone, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.CellPhoneReport)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.WorkPhone, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.WorkPhoneReport)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.Website, new { @class = "control-label" })
+            <a href="@Model.Website">@Model.Website</a>
+        </div>
+        <div class="form-group-sm" @IsVisible(Model.CompanyName)>
+            @Html.LabelFor(m => m.CompanyName, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.CompanyName)
+        </div>
+        <div class="form-group-sm">
+            @Html.LabelFor(m => m.Country, new { @class = "control-label" })
+            @Html.DisplayFor(m => m.Country.Name)
+        </div>
+        <div class="form-group-sm" @IsVisible(Model.Region?.Name)>
+            <label for="User_RegionId" class="control-label">Region</label>
+            @Html.DisplayFor(m => m.Region.Name)
+        </div>
+        <div class="form-group-sm" @IsVisible(Model.Area?.Name)>
+            <label for="User_AreaId" class="control-label">Area</label>
+            @Html.DisplayFor(m => m.Area.Name)
+        </div>
+
+        @if (Model.Capabilities.Any())
+        {
+            <hr />
+            <h4>Language Skills</h4>
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Skill</th>
+                        <th>Is Accredited</th>
+                        <th>Accreditations</th>
+                        <th>Specialisations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cap in Model.Capabilities)
+                    {
+                        <tr>
+                            <td>@(cap.From?.Name)</td>
+                            <td>@(cap.To?.Name)</td>
+                            <td>@(cap.Skill?.Name)</td>
+                            <td>@(cap.IsAccredited ? "Yes" : "No")</td>
+                            <td>@(Html.Raw(string.Join("</br>", cap.Accreditations.Select(a => a.Name))))</td>
+                            <td>@(Html.Raw(string.Join("</br>", cap.Specialisations.Select(a => a.Name))))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+}
+
+<link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<h2>Search</h2>
+
+<div id="searchContainer">
+    <!-- ajax loaded content container -->
+</div>
+
+<div id="memberDetailsContainer" style="display: none;">
+    <!-- ajax loaded member details container -->
+</div>
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/app/admin/Search.js"></script>
+    <script>
+        $(function () {
+            new Search('/Search');
+        })
+    </script>
+}

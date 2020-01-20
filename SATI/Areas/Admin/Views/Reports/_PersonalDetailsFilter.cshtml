@@ -1,0 +1,89 @@
+﻿@model ReportViewModel
+
+<style>
+    #text, #bool, #range {
+        display: none;
+    }
+</style>
+
+<div id="personalDetailsFilter" class="reportBuilderTab">
+    <div class="row">
+        <h4>Personal Details Filters</h4>
+        <div class="col-xs-5">
+            <div id="personalDetailsFiltersContainer">
+
+            </div>
+        </div>
+
+        <div class="col-xs-4">
+
+            <div id="text" class="filter">
+                <label><input type="radio" value="exact" name="filterType" /> Exact match</label>
+                <label><input type="radio" value="start" name="filterType" /> Starts with</label>
+                <label><input type="radio" value="contains" name="filterType" /> Contains</label>
+                <input id="textValue" type="text" value="" style="margin-top: 10px;" />
+            </div>
+
+            <div id="bool" class="filter">
+                <label><input type="radio" name="boolFilter" value="true" /> Include</label>
+                <label><input type="radio" name="boolFilter" value="false" /> Exclude</label>
+                <label><input type="radio" name="boolFilter" value="null" /> Ignore</label>
+            </div>
+
+            <div id="range" class="filter row">
+                <div class="col-xs-4">From</div>
+                <div class="col-xs-8"><input id="fromDate" type="text" /></div>
+                <div class="col-xs-4">To</div>
+                <div class="col-xs-8"><input id="toDate" type="text" /></div>
+            </div>
+
+            <div id="CountryId" data-filter-dropdown>
+                <select id="CountryId_dd" class="form-control">
+                    <option value="">Select Country</option>
+                    @foreach (var c in Model.Countries)
+                    {
+                        <option value="@c.CountryId">@c.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div id="RegionId" data-filter-dropdown>
+                <select id="RegionId_dd" class="form-control">
+                    <option value="">Select Region</option>
+                    @foreach (var r in Model.Regions)
+                    {
+                        <option data-country="@r.CountryId" value="@r.RegionId">@r.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div id="AreaId" data-filter-dropdown>
+                <select id="AreaId_dd" class="form-control">
+                    <option value="">Select Area</option>
+                    @foreach (var a in Model.Areas)
+                    {
+                        <option data-region="@a.RegionId" value="@a.AreaId">@a.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div id="FirstLanguageId" data-filter-dropdown>
+                @Html.DropDownList("FirstLanguageId_dd",
+                    Model.Languages.Select(r =>
+                        new SelectListItem
+                        {
+                            Value = r.LanguageId.ToString(),
+                            Text = r.Name
+                        }).ToList(), "Select Language",
+                    new { @class = "form-control" })
+            </div>
+
+            <div id="Availability" data-filter-dropdown>
+                @Html.EnumDropDownListFor(m => m.Availability,
+               "Select Availability",
+               new { id = "Availability_dd", @class = "form-control" })
+            </div>
+
+        </div>
+    </div>
+</div>

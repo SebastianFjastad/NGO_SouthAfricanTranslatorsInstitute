@@ -1,0 +1,360 @@
+﻿@model LocationsViewModel
+@{
+    ViewBag.Title = "Locations";
+}
+
+<style>
+    [data-loc] {
+        display: none;
+    }
+
+    #regionDropdown option:not(:first-child) {
+        display: none;
+    }
+
+    .addContainer {
+        margin-bottom: 15px;
+    }
+
+    #addRegionContainer, #addAreaContainer {
+        display: none;
+    }
+
+    [data-edit] {
+        margin-right: 10px;
+    }
+
+    [data-input] {
+        display: none;
+    }
+
+    [data-save] {
+        display: none;
+        margin-right: 10px;
+    }
+
+    [data-save].btn-secondary {
+        background-color: green;
+    }
+
+    .glyphicon-ok{
+        color: white;
+    }
+</style>
+
+<h3>Locations</h3>
+
+<div class="row">
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">Countries</div>
+            <div class="panel-body">
+                <label for="countryDropdown">Filter Regions by Country</label>
+                <select id="countryDropdown" class="form-control">
+                    <option value="">All Countries</option>
+                    @foreach (var c in Model.Countries)
+                    {
+                        var selected = Model.CountryId == c.CountryId ? "selected" : "";
+                        <option @selected value="@c.CountryId">@c.Name</option>
+                    }
+                </select>
+                <hr />
+                <div id="countryContainer">
+                    <div id="addCountryContainer" class="row addContainer">
+                        <div class="col-xs-12">Add Country</div>
+                        <div class="col-xs-8">
+                            <input data-name-to-add type="text" placeholder="Country Name" class="form-control" />
+                        </div>
+                        <div class="col-xs-4">
+                            <button data-add data-type="country" class="btn btn-primary pull-right">Add</button>
+                        </div>
+                    </div>
+                    @foreach (var c in Model.Countries)
+                    {
+                        <div data-loc data-country="@c.CountryId">
+                            <label data-name="@c.Name?.ToLower()">@c.Name</label>
+                            <input data-input type="text" value="@c.Name" />
+                            <button data-delete data-type="country" data-id="@c.CountryId" class="btn btn-secondary btn-xs pull-right">X</button>
+                            <button data-edit class="btn btn-secondary btn-xs pull-right" title="edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button data-save data-id="@c.CountryId" data-type="country" class="btn btn-secondary btn-xs pull-right" title="save"><span class="glyphicon glyphicon-floppy-saved"></span></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">Regions</div>
+            <div class="panel-body">
+                <label for="regionDropdown">Filter Areas by Region</label>
+                <select id="regionDropdown" class="form-control">
+                    <option value="">Select Region</option>
+                    @foreach (var r in Model.Regions)
+                    {
+                        var selected = Model.RegionId == r.RegionId ? "selected" : "";
+                        <option @selected value="@r.RegionId" data-country="@r.CountryId">@r.Name</option>
+                    }
+                </select>
+
+                <hr />
+                <div id="regionContainer">
+                    <div id="addRegionContainer" class="row addContainer">
+                        <div class="col-xs-12">Add to <strong id="countryLabelName"></strong></div>
+                        <div class="col-xs-8">
+                            <input data-name-to-add type="text" placeholder="Region Name" class="form-control" />
+                        </div>
+                        <div class="col-xs-4">
+                            <button data-add data-type="region" class="btn btn-primary pull-right">Add</button>
+                        </div>
+                    </div>
+
+                    @foreach (var r in Model.Regions)
+                    {
+                        <div data-loc data-country="@r.CountryId" data-region="@r.RegionId">
+                            <label data-name="@r.Name.ToLower()">@r.Name</label>
+                            <input data-input type="text" value="@r.Name" />
+                            <button data-delete data-type="region" data-id="@r.RegionId" class="btn btn-secondary btn-xs pull-right">X</button>
+                            <button data-edit class="btn btn-secondary btn-xs pull-right" title="edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button data-save data-id="@r.RegionId" data-type="region" class="btn btn-secondary btn-xs pull-right" title="save"><span class="glyphicon glyphicon-floppy-saved"></span></button>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">Areas</div>
+            <div class="panel-body">
+                <div id="areaContainer">
+                    <div id="addAreaContainer" class="row addContainer" style="margin-top: 75px;">
+                        <div class="col-xs-12">Add to <strong id="regionLabelName"></strong></div>
+                        <div class="col-xs-8">
+                            <input data-name-to-add type="text" placeholder="Area Name" class="form-control" />
+                        </div>
+                        <div class="col-xs-4">
+                            <button data-add data-type="area" class="btn btn-primary pull-right">Add</button>
+                        </div>
+                    </div>
+
+                    @foreach (var a in Model.Areas)
+                    {
+                        <div data-loc data-region="@a.RegionId" data-area="@a.AreaId">
+                            <label data-name="@a.Name.ToLower()">@a.Name</label>
+                            <input data-input type="text" value="@a.Name" />
+                            <button data-delete data-type="area" data-id="@a.AreaId" title="delete" class="btn btn-secondary btn-xs pull-right">X</button>
+                            <button data-edit class="btn btn-secondary btn-xs pull-right" title="edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button data-save data-id="@a.AreaId" data-type="area" class="btn btn-secondary btn-xs pull-right" title="save"><span class="glyphicon glyphicon-floppy-saved"></span></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            var $countryDropdown = $('#countryDropdown');
+            var $regionDropdown = $('#regionDropdown');
+
+            // #region Filters
+            $countryDropdown.change(function () { filterCountries($(this).val()) })
+            $regionDropdown.change(function () { filterRegions($(this).val(), $countryDropdown.val()) })
+
+            function filterCountries(countryId) {
+                if (!$countryDropdown.val()) {
+                    $regionDropdown.val('');
+                    $('#countryContainer [data-country]').show();
+                }
+                else {
+                    $('[data-country]').hide();
+                    $('[data-country="' + countryId + '"]').show();
+                }
+                
+                filterRegions(null, countryId);
+
+                if (countryId) {
+                    $('#addRegionContainer').show();
+                    $('#countryLabelName').text($('option:selected', $countryDropdown).text());
+                }
+                else
+                    $('#addRegionContainer').hide();
+            }
+
+            function filterRegions(regionId, countryId) {
+                $('[data-region]').hide();
+                $('[data-region][data-country="' + countryId + '"]').show();
+
+                filterAreas(regionId);
+
+                if (regionId) {
+                    $('#addAreaContainer').show();
+                    $('#regionLabelName').text($('option:selected', $regionDropdown).text());
+                }
+                else
+                    $('#addAreaContainer').hide();
+            }
+
+            function filterAreas(regionId) {
+                $('[data-area]:not(option)').hide();
+                $('[data-region="' + regionId + '"][data-area]').show();
+            }
+
+            //trigger filters on page load
+            $countryDropdown.change();
+            $regionDropdown.change();
+            // #endregion
+
+            // #region Saving
+            $('[data-add]').click(function () {
+                var $this = $(this);
+                var $container = $this.closest('.addContainer').parent();
+                var name = $container.find('[data-name-to-add]').val();
+                if (!name) return alert('No Name entered');
+                var exists = $container.find('[data-name="' + name.toLowerCase() + '"]:visible').length
+                if (exists) return alert('Name already exists');
+                var type = $this.data().type;
+                var countryId = $countryDropdown.val();
+                var regionId = $regionDropdown.val();
+                create(type, countryId, regionId, null, name);
+
+            })
+
+            function create(type, countryId, regionId, areaId, name) {
+                switch (type) {
+                    case 'country':
+                        saveCountry(null, name);
+                        break;
+                    case 'region':
+                        saveRegion(countryId, null, name);
+                        break
+                    case 'area':
+                        saveArea(countryId, regionId, null, name);
+                        break;
+                }
+            }
+
+            function saveCountry(countryId, name) {
+                $.post('@Url.Action("SaveCountry", "Locations")',
+                    {
+                        countryId: countryId,
+                        name: name
+                    },
+                    function (result) {
+                        if (result)
+                            window.location.href = result.url;
+                    })
+            }
+
+            function saveRegion(countryId, regionId, name) {
+                $.post('@Url.Action("SaveRegion", "Locations")',
+                    {
+                        countryId: countryId,
+                        regionId: regionId,
+                        name: name
+                    },
+                    function (result) {
+                        if (result)
+                            window.location.href = result.url;
+                    })
+            }
+
+            function saveArea(countryId, regionId, areaId, name) {
+                $.post('@Url.Action("SaveArea", "Locations")',
+                        {
+                            countryId: countryId,
+                            regionId: regionId,
+                            areaId: areaId,
+                            name: name
+                        },
+                        function (result) {
+                            if (result)
+                                window.location.href = result.url;
+                        })
+            }
+
+            $('[data-delete]').click(function () {
+                var $this = $(this);
+                var name = $this.siblings('label').text();
+                var selectedCountryId = $countryDropdown.val();
+                var selectedRegionId = $regionDropdown.val();
+                var params = {
+                    selectedCountryId: selectedCountryId,
+                    selectedRegionId: selectedRegionId
+                }
+                var type = $this.data('type');
+                var idToDelete = $this.data('id');
+                switch (type) {
+                    case 'country':
+                        params.countryToDeleteId = idToDelete;
+                        break;
+                    case 'region':
+                        params.regionToDeleteId = idToDelete;
+                        break
+                    case 'area':
+                        params.areaToDeleteId = idToDelete;
+                }
+
+                if (confirm('Are you sure you want to delete ' + name + '? It will delete the record and all related records, ie deleting a country would delete Country > Region > Area!')) {
+                    $.post('@Url.Action("Delete", "Locations")', params,
+                        function () {
+                            window.location.href = '/Admin/Locations/Index?countryId=' + selectedCountryId + '&regionId=' + selectedRegionId
+                        })
+                };
+            })
+
+            $('[data-edit]').click(function () {
+                var $this = $(this);
+                $this.siblings('label').hide();
+                $this.siblings('input').show();
+                $this.siblings('[data-save]').show();
+                $this.hide();
+            })
+
+            $('[data-save]').click(function () {
+                var $this = $(this);
+
+                var name = $this.siblings('input').val();
+                if (!name) return alert('No Name entered');
+
+                var $container = $this.closest('.addContainer').parent();
+
+                var exists = $container.find('[data-name="' + name.toLowerCase() + '"]:visible').length
+                if (exists) return alert('Name already exists');
+
+                var rowDataItem = $this.closest('[data-loc]').data();
+                var countryId = rowDataItem.country || $countryDropdown.val() || null;
+                var regionId = rowDataItem.region || null
+                var areaId = rowDataItem.area || null;
+                var type = $this.data('type');
+
+                edit(type, countryId, regionId, areaId, name)
+            })
+
+            function edit(type, countryId, regionId, areaId, name) {
+                switch (type) {
+                    case 'country':
+                        saveCountry(countryId, name);
+                        break;
+                    case 'region':
+                        saveRegion(countryId, regionId, name);
+                        break
+                    case 'area':
+                        saveArea(countryId, regionId, areaId, name);
+                        break;
+                }
+            }
+
+            // #endregion
+
+        })
+    </script>
+}

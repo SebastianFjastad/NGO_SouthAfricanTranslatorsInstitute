@@ -1,0 +1,23 @@
+﻿@model SATI.Models.User
+
+@if (!string.IsNullOrEmpty(Model?.Id))
+{
+    <div class="memberDetailsBar">
+        <label class="control-label">Name: </label> <span class="memberDetailsValue">@Model.FirstName @Model.LastName</span>
+
+        <label class="control-label">Email: </label> <span class="memberDetailsValue">@Model.Email</span>
+
+        <label class="control-label">Membership No: </label> <span class="memberDetailsValue">@Model.MembershipNo</span>
+        @if (Model.IsDeleted)
+        {
+            <br/>
+            <label class="control-label"><span class="alert-danger">Blocked (will not be publicy available)</span></label>
+        }
+    </div>
+}
+else
+{
+    <div class="noMemberDetailsBar">
+        <h4>Please select a member to view or create a new one</h4>
+    </div>
+}
